@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_process_hub/features/auth/widgets/auth_header.dart';
-import 'package:uni_process_hub/features/model/user_model.dart';
 import 'package:uni_process_hub/firebase/firebase_service.dart';
 import 'package:uni_process_hub/widgets/custom_text_field.dart';
-import 'package:uni_process_hub/widgets/dropdown_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
