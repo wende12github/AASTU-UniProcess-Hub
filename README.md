@@ -4,6 +4,70 @@
 AASTU SmartQueue & Digital Services System (ASQDS)
 An integrated Smart Queue, Online Registration, Digital Forms, and Appointment Platform for Addis Ababa Science and Technology University.
 
+# Table of Contents
+
+1. [Project Title](#project-title)
+2. [Mobile App Screenshots](#mobile-app-screenshots)
+   - [Admin Dashboard: UniProcess Hub](#admin-dashboard-uniprocess-hub)
+     - [Admin Overview](#admin-overview)
+     - [Queue Management](#queue-management)
+     - [Appointment Management](#appointment-management)
+     - [Registration Management](#registration-management)
+     - [Access Logs & Security](#access-logs--security)
+     - [Admin Settings](#admin-settings)
+     - [Student Clearance Form](#student-clearance-form)
+3. [Introduction](#introduction)
+   - [Purpose of the System](#11-purpose-of-the-system)
+   - [Problem Statement](#12-problem-statement)
+     - [Long Physical Queues](#long-physical-queues)
+     - [Manual, Paper-Based Forms](#manual-paper-based-forms)
+     - [Poor Scheduling and Service Management](#poor-scheduling-and-service-management)
+     - [Inefficient Communication](#inefficient-communication)
+     - [No Centralized Service Platform](#no-centralized-service-platform)
+   - [Overall Impact](#overall-impact)
+   - [System Solution Summary](#13-system-solution-summary)
+   - [Stakeholders](#14-stakeholders)
+4. [System Overview](#2-system-overview)
+   - [Student Mobile App (Flutter)](#a-student-mobile-app-flutter)
+   - [Admin Dashboard (Web)](#b-admin-dashboard-web)
+   - [Firebase Backend](#c-firebase-backend)
+#
+
+# 📱 Mobile App Screenshots
+## 🧑‍💼 Admin Dashboard: UniProcess Hub
+
+### The Admin Dashboard enables university staff to manage queues, appointments, registrations, and system access logs in real time.
+
+### 🖥️ Admin Overview
+<img src="uni_process_hub/assets/screenshots/UinProcessHubAdmin.png" width="600"/>
+
+### 📋 Queue Management
+<img src="uni_process_hub/assets/screenshots/QueueManagementAdmin.png" width="600"/>
+
+### 📆 Appointment Management
+
+<img src="uni_process_hub/assets/screenshots/AppointmentAdmin.png" width="600"/>
+
+### 📝 Registration Management
+
+<img src="uni_process_hub/assets/screenshots/RegistrationAdmin.png" width="600"/>
+
+### 🔐 Access Logs & Security
+
+Track user activity, login attempts, and system access history for accountability.
+
+<img src="uni_process_hub/assets/screenshots/AccessLogAdmin.png" width="600"/>
+
+### ⚙️ Admin Settings
+
+<img src="uni_process_hub/assets/screenshots/AdminSetting.png" width="600"/>
+
+### 🧑‍💼 Student Clearance Form
+
+<img src="uni_process_hub/assets/screenshots/clearance_form.png" width="600"/>
+
+
+
 # 1. Introduction
 ## 1.1 Purpose of the System
 
