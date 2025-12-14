@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_process_hub/features/profile/widgets/user_welcome.dart';
 import 'package:uni_process_hub/features/queue_status/controller/queue_controller.dart';
 import 'package:uni_process_hub/features/queue_status/widgets/search_input.dart';
 import 'package:uni_process_hub/features/queue_status/widgets/service_card.dart';
@@ -40,71 +41,11 @@ class JoinQueueScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: const DecorationImage(
-                                    image: NetworkImage(
-                                      'https://lh3.googleusercontent.com/aida-public/AB6AXuB-4tyDbTTehCvQeeEWhDME7Uh4kBRJI7dD8YW-yMl6zPizeWgsOqNykej9mrY3n-hl2K76cYs4ED7Owx_4gjQ1Vp42QPtDM3bA4LlxfDy7vWu2HRxFeNImeTmCzxyXrc90FhF4NEobjdSPkQ5oNj3V1TdJbfQPfPfervGIf20rvXCQTaU9nSFv4Mg2u6Zo2Fr3xXZ_5cGlmnP-SeNXae55QpKn7y4pDuv2JNUGUwTwIgrdwxSC_m7k_dH69jYYJe8aaIlb041fxMjH',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: const Color(
-                                      0xFF49E619,
-                                    ).withValues(alpha: .12),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF49E619),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Welcome back',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDark
-                                      ? const Color(0xFFA4B89D)
-                                      : Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Hello, Abebe',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Expanded(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [const UserWelcome()],
+                        ),
                       ),
                       Stack(
                         children: [
