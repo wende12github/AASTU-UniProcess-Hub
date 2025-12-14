@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String hintText;
+  final String? label;
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final int maxLines;
@@ -10,10 +11,12 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final ValueChanged<String>? onChanged;
   final Color? fillColor;
+  final bool obscure;
 
   const CustomTextField({
     super.key,
     required this.hintText,
+    this.label,
     this.controller,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
@@ -22,25 +25,33 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.onChanged,
     this.fillColor,
+    this.obscure = false,
   });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      readOnly: readOnly,
-      onChanged: onChanged,
+      controller: widget.controller,
+      obscureText: widget.obscure,
+      keyboardType: widget.keyboardType,
+      maxLines: widget.maxLines,
+      readOnly: widget.readOnly,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: widget.hintText,
         filled: true,
-        fillColor: fillColor ??
+        fillColor: widget.fillColor ??
             (isDark ? const Color(0xFF1E2B1A) : Colors.white),
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
+        prefixIcon: widget.prefixIcon,
+        suffixIcon: widget.suffixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
