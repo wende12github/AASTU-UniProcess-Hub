@@ -3,8 +3,7 @@ import 'package:uni_process_hub/features/forms/widgets/form_item.dart';
 import 'package:uni_process_hub/features/forms/widgets/icon_buttons.dart';
 import 'package:uni_process_hub/features/forms/widgets/outlined_buttons.dart';
 import 'package:uni_process_hub/features/forms/widgets/primary_button.dart';
-import 'package:uni_process_hub/features/forms/widgets/seconder_button.dart';
-
+import 'package:uni_process_hub/features/forms/widgets/secondar_button.dart';
 
 class FormCard extends StatelessWidget {
   final FormItem form;
@@ -70,13 +69,18 @@ class FormCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(form.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(
+                      form.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(form.subtitle,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      form.subtitle,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                   ],
                 ),
               ),
@@ -90,15 +94,18 @@ class FormCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: form.progress,
                 minHeight: 6,
-                backgroundColor:
-                    isDark ? const Color(0xFF25361F) : Colors.grey.shade200,
+                backgroundColor: isDark
+                    ? const Color(0xFF25361F)
+                    : Colors.grey.shade200,
                 color: const Color(0xFF49E619),
               ),
             ),
             const SizedBox(height: 6),
-            Text('${(form.progress * 100).round()}% Completed',
-                style: const TextStyle(fontSize: 11, color: Colors.grey)),
-          ]
+            Text(
+              '${(form.progress * 100).round()}% Completed',
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+          ],
         ],
       ),
     );
