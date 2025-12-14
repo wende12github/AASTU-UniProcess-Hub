@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_process_hub/features/auth/screens/login_screen.dart';
 import 'package:uni_process_hub/features/auth/screens/register_screen.dart';
+import 'package:uni_process_hub/features/auth/widgets/auth_gate.dart';
 import 'package:uni_process_hub/features/notification_settings/controller/notification_settings_controller.dart';
+import 'package:uni_process_hub/features/profile/screens/profile_page_screen.dart';
+import 'package:uni_process_hub/features/profile/widgets/settings_section.dart';
 import 'package:uni_process_hub/features/queue_status/controller/queue_controller.dart';
-import 'package:uni_process_hub/features/queue_status/ui/queue_status_screen.dart';
 import 'package:uni_process_hub/main_navigation.dart';
 import 'package:uni_process_hub/providers/app_state.dart';
 import 'core/theme/app_theme.dart';
@@ -63,7 +65,6 @@ class UinProcessApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AppState()),
         ChangeNotifierProvider(create: (_) => QueueController()),
         ChangeNotifierProvider(create: (_) => NotificationSettingsController()),
-        // ChangeNotifierProvider(create: (_) => )
       ],
       child: Consumer<AppTheme>(
         builder: (context, theme, _) {
@@ -73,12 +74,14 @@ class UinProcessApp extends StatelessWidget {
             theme: theme.lightTheme,
             darkTheme: theme.darkTheme,
             themeMode: theme.themeMode,
-            home: const RegisterScreen(),
-            initialRoute: '/register', // default page to open
+            home: const AuthGate(),
+            initialRoute: '/register',
             routes: {
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
-              '/home': (context) => const QueueStatusScreen(),
+              '/home': (context) => const MainNavigation(),
+              '/setting': (context) => const SettingsSection(),
+              '/profile': (context) => const ProfilePageScreen(),
             },
           );
         },
