@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_process_hub/core/widgets/theme_toggle_icon.dart';
@@ -15,46 +17,68 @@ class QueueStatusScreen extends StatefulWidget {
 }
 
 class _QueueStatusScreenState extends State<QueueStatusScreen> {
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     final ctrl = Provider.of<QueueStatusController>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final user = _auth.currentUser;
+    if (user == null) {
+      return const Center(child: Text('User not logged in'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundImage: NetworkImage(
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuB-4tyDbTTehCvQeeEWhDME7Uh4kBRJI7dD8YW-yMl6zPizeWgsOqNykej9mrY3n-hl2K76cYs4ED7Owx_4gjQ1Vp42QPtDM3bA4LlxfDy7vWu2HRxFeNImeTmCzxyXrc90FhF4NEobjdSPkQ5oNj3V1TdJbfQPfPfervGIf20rvXCQTaU9nSFv4Mg2u6Zo2Fr3xXZ_5cGlmnP-SeNXae55QpKn7y4pDuv2JNUGUwTwIgrdwxSC_m7k_dH69jYYJe8aaIlb041fxMjH',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        title: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: _firestore.collection('users').doc(user.uid).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return const Text('Loading...');
+            }
+
+            final data = snapshot.data!.data()!;
+            final fullName = data['fullName'] ?? 'Student';
+            final photoUrl = data['profileImageUrl'] ?? '';
+
+            return Row(
               children: [
-                Text(
-                  'Welcome back',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
+                CircleAvatar(
+                  radius: 22,
+                  backgroundImage: photoUrl.isNotEmpty
+                      ? NetworkImage(photoUrl)
+                      : const AssetImage('assets/images/pngwing.png')
+                            as ImageProvider,
                 ),
-                SizedBox(height: 4),
-                Text(
-                  'Hello, Abebe',
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome back',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Hello, $fullName',
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
         actions: [
           ThemeToggleIcon(),
@@ -65,10 +89,6 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
             mouseCursor: SystemMouseCursors.contextMenu,
             padding: EdgeInsets.only(right: 12),
           ),
-          // Padding(
-          //   padding: EdgeInsets.only(right: 12.0),
-          //   child: Icon(Icons.notifications),
-          // ),
         ],
       ),
       body: SingleChildScrollView(
