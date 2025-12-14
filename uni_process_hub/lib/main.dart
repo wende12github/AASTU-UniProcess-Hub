@@ -2,8 +2,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_process_hub/features/auth/screens/login_screen.dart';
+import 'package:uni_process_hub/features/auth/screens/register_screen.dart';
 import 'package:uni_process_hub/features/notification_settings/controller/notification_settings_controller.dart';
 import 'package:uni_process_hub/features/queue_status/controller/queue_controller.dart';
+import 'package:uni_process_hub/features/queue_status/ui/queue_status_screen.dart';
 import 'package:uni_process_hub/main_navigation.dart';
 import 'package:uni_process_hub/providers/app_state.dart';
 import 'core/theme/app_theme.dart';
@@ -42,7 +45,6 @@ void main() async {
     await Firebase.initializeApp();
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    
   } catch (e) {
     debugPrint("Firebase init error: $e");
   }
@@ -71,7 +73,13 @@ class UinProcessApp extends StatelessWidget {
             theme: theme.lightTheme,
             darkTheme: theme.darkTheme,
             themeMode: theme.themeMode,
-            home: const MainNavigation(),
+            home: const RegisterScreen(),
+            initialRoute: '/register', // default page to open
+            routes: {
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => const QueueStatusScreen(),
+            },
           );
         },
       ),
