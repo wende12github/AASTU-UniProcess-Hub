@@ -17,8 +17,7 @@ class AuthHeader extends StatelessWidget {
     required this.onRegisterPressed,
     required this.title,
     required this.subtitle,
-    this.logoUrl =
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCgNm_oYkXlRxLueiFt-bavcJkDYzBbKaNwZRjOiDlHxycNa1GFc3dcbaYSv3EXP4c8QUlF5TnnepulwiyyaCQnpkNs3xIPdGS8i0Yl_DB9qhgBhAFZXPG2tsjGtRNGaUvsmZRrtd_RhSUYWiALZiXiOgdzdnAFD27TLujKEfwTb_l1fwBVIgKQI7nKV-cnhbHkW7-vA5IYeKY1IPk6lqNnPdartP8ddv9u-5fWzvFgUwsIf5sTyKAi9eUb_XbAjO2NymumCjtM0TlO",
+    required this.logoUrl,
     required this.activeMode,
   });
 
@@ -31,8 +30,8 @@ class AuthHeader extends StatelessWidget {
       children: [
         // Logo
         Container(
-          width: 96,
-          height: 96,
+          width: 120,
+          height: 120,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
@@ -49,9 +48,10 @@ class AuthHeader extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            child: Image.network(
+            child: Image.asset(
               logoUrl,
               fit: BoxFit.cover,
+              width: double.infinity,
               errorBuilder: (context, error, stackTrace) =>
                   const Icon(Icons.school, size: 48),
             ),

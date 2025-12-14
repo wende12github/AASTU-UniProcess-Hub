@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: 'UniProcess Hub',
                 subtitle: 'Manage queues, forms, and appointment in one place',
                 activeMode: AuthMode.login,
+                logoUrl: "assets/logos/g_logo.png",
               ),
               SizedBox(height: 22),
               CustomTextField(
@@ -142,28 +143,25 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
 
               /// HAVING TROUBLE SECTION
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "Having trouble?",
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                  const Text(
+                    "Having trouble?",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 6),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/support');
+                    },
+                    child: const Text(
+                      "Contact Support",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 240, 65, 12),
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 6),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/support');
-                        },
-                        child: const Text(
-                          "Contact Support",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 240, 65, 12),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),

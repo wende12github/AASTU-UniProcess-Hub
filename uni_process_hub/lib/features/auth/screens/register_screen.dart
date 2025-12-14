@@ -52,6 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 title: "Create Account",
                 subtitle: "Join the digital campus community.",
                 activeMode: AuthMode.register,
+                logoUrl: "assets/logos/g_logo.png",
               ),
               SizedBox(height: 22),
               CustomTextField(
