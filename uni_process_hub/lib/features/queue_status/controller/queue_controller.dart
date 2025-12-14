@@ -6,7 +6,7 @@ class QueueController extends ChangeNotifier {
     ServiceModels(
       id: 'registrar',
       title: 'Registrar Office',
-      subtitle: 'Window 1-4 • Admin Bldg',
+      subtitle: 'B61 R1-4 • Admin Bldg',
       description:
           'Handles student registration, grade report issuance, academic record corrections, and readmission requests.',
       hours: '8:30 AM - 4:30 PM',
@@ -19,7 +19,7 @@ class QueueController extends ChangeNotifier {
     ServiceModels(
       id: 'clinic',
       title: 'Student Clinic',
-      subtitle: 'OPD • Ground Floor',
+      subtitle: 'B54 • Ground Floor',
       description: 'Primary health services for students.',
       hours: '8:30 AM - 4:30 PM',
       avgService: '10 min / person',
@@ -41,7 +41,7 @@ class QueueController extends ChangeNotifier {
     ServiceModels(
       id: 'cafeteria',
       title: 'Student Cafeteria',
-      subtitle: 'Lunch Service',
+      subtitle: 'B35 Lunch Service',
       description: 'Daily lunch service for students.',
       hours: '11:00 AM - 2:00 PM',
       avgService: 'Varies',
@@ -52,7 +52,7 @@ class QueueController extends ChangeNotifier {
     ServiceModels(
       id: 'discipline',
       title: 'Discipline Office',
-      subtitle: 'Opens at 2:00 PM',
+      subtitle: 'B54 Rome 2-4',
       description: 'Discipline related inquiries.',
       hours: 'Opens at 2:00 PM',
       avgService: '--',
@@ -68,11 +68,17 @@ class QueueController extends ChangeNotifier {
   List<ServiceModels> get filtered => searchQuery.isEmpty
       ? services
       : services
-          .where((s) =>
-              s.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
-              s.subtitle.toLowerCase().contains(searchQuery.toLowerCase()) ||
-              s.description.toLowerCase().contains(searchQuery.toLowerCase()))
-          .toList();
+            .where(
+              (s) =>
+                  s.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                  s.subtitle.toLowerCase().contains(
+                    searchQuery.toLowerCase(),
+                  ) ||
+                  s.description.toLowerCase().contains(
+                    searchQuery.toLowerCase(),
+                  ),
+            )
+            .toList();
 
   void toggleExpand(String id) {
     final idx = services.indexWhere((s) => s.id == id);
