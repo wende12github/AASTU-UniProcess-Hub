@@ -1,8 +1,7 @@
-// lib/screens/booking_screen.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:uni_process_hub/core/theme/app_color.dart';
 import 'package:uni_process_hub/widgets/custom_text_field.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -14,8 +13,11 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  int _selectedOfficeIndex = 0; // Registrar is selected by default
-  String? _selectedTime; // e.g., "10:00 AM"
+  int _selectedOfficeIndex = 0;
+  String? _selectedTime;
+  DateTime? _selectedDate;
+  DateTime _focusedMonth = DateTime.now();
+
   final TextEditingController _reasonController = TextEditingController();
 
   final List<Map<String, String>> offices = [
@@ -55,401 +57,72 @@ class _BookingScreenState extends State<BookingScreen> {
     '02:00 PM',
   ];
 
+  String _monthName(int m) => const [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ][m - 1];
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: [
-              // Header
-              SliverAppBar(
-                leading: IconButton(
-                  icon: const Icon(Symbols.arrow_back_ios_new),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                title: const Text('Book Appointment'),
-                centerTitle: true,
-                backgroundColor: isDark
-                    ? const Color(0xFF152111)
-                    : const Color(0xFFF6F8F6),
-                floating: true,
-              ),
-
-              // Progress Dots
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      3,
-                      (i) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: CircleAvatar(
-                          radius: 3,
-                          backgroundColor: i == 0
-                              ? (isDark ? Colors.white : Colors.black)
-                              : (isDark
-                                    ? Colors.white24
-                                    : Colors.grey.shade300),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Select Office
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                  child: Text(
-                    'Select Office',
-                    style:
-                        Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ) ??
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: SafeArea(
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: offices.length,
-                    itemBuilder: (context, index) {
-                      final office = offices[index];
-                      final selected = _selectedOfficeIndex == index;
-                      return GestureDetector(
-                        onTap: () =>
-                            setState(() => _selectedOfficeIndex = index),
-                        child: Container(
-                          width: 140,
-                          margin: const EdgeInsets.only(right: 16),
-                          child: Column(
-                            children: [
-                              Stack(
-                                children: [
-                                  Container(
-                                    height: 140,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      image: DecorationImage(
-                                        image: NetworkImage(office['image']!),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 140,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: selected
-                                          ? Colors.black.withValues(alpha: .4)
-                                          : Colors.black.withValues(alpha: .3),
-                                      border: selected
-                                          ? Border.all(color: primary, width: 2)
-                                          : null,
-                                    ),
-                                  ),
-                                  if (selected)
-                                    Positioned(
-                                      bottom: 8,
-                                      right: 8,
-                                      child: CircleAvatar(
-                                        radius: 12,
-                                        backgroundColor: primary,
-                                        child: const Icon(
-                                          Symbols.check,
-                                          color: Colors.black,
-                                          size: 16,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                office['title']!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                office['subtitle']!,
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              // Select Date
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 32, 20, 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select Date',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Symbols.chevron_left),
-                            onPressed: () {},
-                          ),
-                          Text(
-                            'October 2025',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          IconButton(
-                            icon: const Icon(Symbols.chevron_right),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1E2B1A) : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDark ? Colors.white10 : Colors.grey.shade200,
-                    ),
-                  ),
-                  child: _buildCalendar(),
-                ),
-              ),
-
-              // Select Time
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 32, 20, 8),
-                  child: Text(
-                    'Select Time',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: timeSlots.map((time) {
-                      final booked = time == '11:00 AM';
-                      final selected = _selectedTime == time;
-                      return GestureDetector(
-                        onTap: booked
-                            ? null
-                            : () => setState(() => _selectedTime = time),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? primary
-                                : (isDark
-                                      ? const Color(0xFF1E2B1A)
-                                      : Colors.white),
-                            border: Border.all(
-                              color: booked
-                                  ? (isDark
-                                        ? Colors.white24
-                                        : Colors.grey.shade300)
-                                  : (selected
-                                        ? primary
-                                        : (isDark
-                                              ? Colors.white10
-                                              : Colors.grey.shade300)),
-                            ),
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          child: Text(
-                            time,
-                            style: TextStyle(
-                              color: selected
-                                  ? Colors.black
-                                  : (booked ? Colors.grey.shade400 : null),
-                              fontWeight: selected
-                                  ? FontWeight.bold
-                                  : FontWeight.w400,
-                              decoration: booked
-                                  ? TextDecoration.lineThrough
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-
-              // Reason (Optional)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 32, 20, 100),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Reason (Optional)',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      CustomTextField(
-                        controller: _reasonController,
-                        hintText:
-                            'Briefly describe why you are visiting the ${offices[_selectedOfficeIndex]['title']}...',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Bottom Confirm Button
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    isDark ? const Color(0xFF152111) : Colors.white,
-                  ],
-                ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Schedule',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              _selectedTime != null
-                                  ? 'Oct 26, $_selectedTime'
-                                  : 'Select time',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Office',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              offices[_selectedOfficeIndex]['title'] ??
-                                  'Office',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
-          ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Symbols.arrow_back_ios_new),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('Book Appointment'),
+        centerTitle: true,
+        backgroundColor: isDark
+            ? const Color(0xFF152111)
+            : const Color(0xFFF6F8F6),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          _progressDots(isDark),
+          _sectionTitle('Select Office'),
+          _officeSelector(),
+          _sectionTitle('Select Date'),
+          _calendarSection(isDark),
+          _sectionTitle('Select Time'),
+          _timeSlotsSection(),
+          _sectionTitle('Reason (Optional)'),
+          _reasonSection(),
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
         ],
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(20),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primary,
-            foregroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 4,
-            shadowColor: primary.withValues(alpha: .4),
-          ),
-          onPressed: _selectedTime == null
-              ? null
-              : () {
-                  // Handle booking confirmation
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Appointment booked!')),
-                  );
-                },
-          child: SizedBox(
-            width: double.infinity,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Confirm Booking',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                SizedBox(width: 8),
-                Icon(Symbols.check_circle),
-              ],
+      bottomNavigationBar: _confirmButton(),
+    );
+  }
+
+  // UI SECTIONS 
+  SliverToBoxAdapter _progressDots(bool isDark) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            3,
+            (i) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: CircleAvatar(
+                radius: 3,
+                backgroundColor: i == 0
+                    ? (isDark ? Colors.white : Colors.black)
+                    : (isDark ? Colors.white24 : Colors.grey.shade300),
+              ),
             ),
           ),
         ),
@@ -457,85 +130,295 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  SliverToBoxAdapter _sectionTitle(String title) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+        child: Text(
+          title,
+          style:
+              Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold) ??
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _officeSelector() {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 210,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: offices.length,
+          itemBuilder: (context, index) {
+            final office = offices[index];
+            final selected = _selectedOfficeIndex == index;
+
+            return GestureDetector(
+              onTap: () => setState(() => _selectedOfficeIndex = index),
+              child: Container(
+                width: 140,
+                margin: const EdgeInsets.only(right: 16),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        image: DecorationImage(
+                          image: NetworkImage(office['image']!),
+                          fit: BoxFit.cover,
+                        ),
+                        border: selected
+                            ? Border.all(color: AppColors.primary, width: 2)
+                            : null,
+                        boxShadow: selected
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.3),
+                                  blurRadius: 12,
+                                ),
+                              ]
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      office['title']!,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      office['subtitle']!,
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _calendarSection(bool isDark) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E2B1A) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: _buildCalendar(),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _timeSlotsSection() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: timeSlots.map((time) {
+            final selected = _selectedTime == time;
+            return ChoiceChip(
+              label: Text(time),
+              selected: selected,
+              selectedColor: AppColors.primary,
+              onSelected: (_) => setState(() => _selectedTime = time),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _reasonSection() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: CustomTextField(
+          controller: _reasonController,
+          hintText:
+              'Briefly describe why you are visiting the ${offices[_selectedOfficeIndex]['title']}...',
+        ),
+      ),
+    );
+  }
+
+  Widget _confirmButton() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: _selectedDate == null || _selectedTime == null
+            ? null
+            : _confirmBooking,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'Confirm Booking',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  // CALENDAR 
   Widget _buildCalendar() {
-    // Simplified static calendar for October 2023 with Oct 24 selected
+    final now = DateTime.now();
+
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('appointments')
-          .snapshots(), // real-time
+          .where('serviceId', isEqualTo: widget.serviceId)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        final bookedDates =
+            snapshot.data?.docs
+                .map((d) => (d['date'] as Timestamp).toDate())
+                .map((d) => DateTime(d.year, d.month, d.day))
+                .toSet() ??
+            {};
 
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Error loading calendar',
-              style: TextStyle(color: Colors.red),
+        final firstDay = DateTime(_focusedMonth.year, _focusedMonth.month, 1);
+        final daysInMonth = DateTime(
+          _focusedMonth.year,
+          _focusedMonth.month + 1,
+          0,
+        ).day;
+        final startOffset = firstDay.weekday % 7;
+
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left),
+                  onPressed: () {
+                    setState(() {
+                      _focusedMonth = DateTime(
+                        _focusedMonth.year,
+                        _focusedMonth.month - 1,
+                      );
+                    });
+                  },
+                ),
+                Text(
+                  '${_monthName(_focusedMonth.month)} ${_focusedMonth.year}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: () {
+                    setState(() {
+                      _focusedMonth = DateTime(
+                        _focusedMonth.year,
+                        _focusedMonth.month + 1,
+                      );
+                    });
+                  },
+                ),
+              ],
             ),
-          );
-        }
+            const SizedBox(height: 12),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: startOffset + daysInMonth,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                mainAxisSpacing: 12,
+              ),
+              itemBuilder: (context, index) {
+                if (index < startOffset) return const SizedBox();
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return _calendarGrid(const []);
-        }
+                final day = index - startOffset + 1;
+                final date = DateTime(
+                  _focusedMonth.year,
+                  _focusedMonth.month,
+                  day,
+                );
 
-        // Extract unavailable dates from Firestore
-        final unavailableDates = snapshot.data!.docs
-            .map((doc) {
-              final dateString = doc['date'];
-              final parts = dateString.split('-');
+                final isPast = date.isBefore(
+                  DateTime(now.year, now.month, now.day),
+                );
+                final isBooked = bookedDates.contains(date);
+                final isSelected = _selectedDate == date;
 
-              if (parts.length != 3) return null;
+                if (isSelected) {
+                  return Center(
+                    child: CircleAvatar(
+                      radius: 18,
+                      backgroundColor: AppColors.primary,
+                      child: Text(
+                        '$day',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }
 
-              return DateTime(
-                int.parse(parts[0]),
-                int.parse(parts[1]),
-                int.parse(parts[2]),
-              );
-            })
-            .whereType<DateTime>()
-            .toList();
-
-        return _calendarGrid(unavailableDates);
+                return GestureDetector(
+                  onTap: isPast || isBooked
+                      ? null
+                      : () => setState(() => _selectedDate = date),
+                  child: Center(
+                    child: Text(
+                      '$day',
+                      style: TextStyle(
+                        color: isPast || isBooked
+                            ? Colors.grey.withOpacity(.4)
+                            : null,
+                        decoration: isBooked
+                            ? TextDecoration.lineThrough
+                            : null,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
       },
     );
   }
 
-  Widget _calendarGrid(List<DateTime> unavailableDates) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-      ),
-      itemCount: 42,
-      itemBuilder: (context, index) {
-        final day = index - 4;
-        if (day < 1 || day > 31) return const SizedBox();
+  Future<void> _confirmBooking() async {
+    await FirebaseFirestore.instance.collection('appointments').add({
+      'serviceId': widget.serviceId,
+      'office': offices[_selectedOfficeIndex]['title'],
+      'date': Timestamp.fromDate(_selectedDate!),
+      'time': _selectedTime,
+      'reason': _reasonController.text.trim(),
+      'createdAt': FieldValue.serverTimestamp(),
+    });
 
-        final currentDate = DateTime(2023, 10, day);
-
-        final isUnavailable = unavailableDates.any(
-          (d) =>
-              d.year == currentDate.year &&
-              d.month == currentDate.month &&
-              d.day == currentDate.day,
-        );
-
-        return Center(
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: isUnavailable ? Colors.grey.shade300 : null,
-              shape: BoxShape.circle,
-            ),
-            child: Center(child: Text('$day')),
-          ),
-        );
-      },
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Appointment booked successfully')),
     );
+
+    Navigator.pop(context);
   }
 }
