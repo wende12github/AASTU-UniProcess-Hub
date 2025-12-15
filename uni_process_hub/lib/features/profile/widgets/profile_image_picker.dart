@@ -69,20 +69,30 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
         alignment: Alignment.center,
         children: [
           ClipOval(
-            child: widget.imageUrl != null
-                ? Image.network(
-                    widget.imageUrl!,
-                    width: widget.size,
-                    height: widget.size,
-                    fit: BoxFit.cover,
-                  )
-                : Container(
-                    width: widget.size,
-                    height: widget.size,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.person, size: 48),
-                  ),
+            child: SizedBox(
+              width: widget.size,
+              height: widget.size,
+              child: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
+                  ? Image.network(
+                      widget.imageUrl!,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/pngwing.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image.asset('assets/images/pngwing.png', fit: BoxFit.cover),
+            ),
           ),
+
           if (_uploading)
             Container(
               width: widget.size,
