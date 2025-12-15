@@ -106,7 +106,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // UI SECTIONS 
+  // UI SECTIONS
   SliverToBoxAdapter _progressDots(bool isDark) {
     return SliverToBoxAdapter(
       child: Padding(
@@ -179,7 +179,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         boxShadow: selected
                             ? [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.3),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
                                   blurRadius: 12,
                                 ),
                               ]
@@ -214,7 +216,7 @@ class _BookingScreenState extends State<BookingScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E2B1A) : Colors.white,
+          color: isDark ? const Color(0xFF1E2B1A) : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: _buildCalendar(),
@@ -279,7 +281,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // CALENDAR 
+  // CALENDAR
   Widget _buildCalendar() {
     final now = DateTime.now();
 
@@ -387,7 +389,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       '$day',
                       style: TextStyle(
                         color: isPast || isBooked
-                            ? Colors.grey.withOpacity(.4)
+                            ? Colors.grey.withValues(alpha: .4)
                             : null,
                         decoration: isBooked
                             ? TextDecoration.lineThrough
